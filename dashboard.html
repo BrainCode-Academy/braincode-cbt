@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrainCode CBT - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="img/logo.jpg" alt="Logo" height="40" class="me-2 rounded">
+                <span>BRAINCODE CBT</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="me-3 fw-bold text-muted" id="userDisplay">Student</span>
+                <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5 flex-grow-1">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="glass-card p-4 animate-fade-in">
+                    <h2 class="fw-bold text-primary">Welcome to your Dashboard</h2>
+                    <p class="text-muted">Select up to 10 subjects for your examination.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="subjectContainer">
+            <!-- Subjects will be loaded here dynamically -->
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <div class="glass-card p-4">
+                    <h4>Exam Configuration</h4>
+                    <div class="row justify-content-center mt-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Duration (Minutes)</label>
+                            <select class="form-select" id="durationSelect">
+                                <option value="15">15 Minutes</option>
+                                <option value="30">30 Minutes</option>
+                                <option value="60" selected>60 Minutes</option>
+                                <option value="120">2 Hours</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-lg mt-4 px-5" onclick="startExam()">
+                        Start Examination <i class="fas fa-play ms-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p class="mb-0">&copy; 2024 BrainCode CBT. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="data/questions.js"></script>
+    <script>
+        // Check auth
+        const user = sessionStorage.getItem('user');
+        if (!user) window.location.href = 'index.html';
+        document.getElementById('userDisplay').textContent = user;
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        // Load subjects
+        function loadSubjects() {
+            try {
+                const data = window.MOCK_DATA;
+                if (!data) throw new Error("Data not loaded");
+
+                const container = document.getElementById('subjectContainer');
+                container.innerHTML = '';
+
+                data.subjects.forEach(subject => {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-3 mb-4'; // Changed to col-md-3 for better grid with 20 items
+                    col.innerHTML = `
+                        <div class="glass-card p-3 h-100 position-relative">
+                            <div class="form-check">
+                                <input class="form-check-input subject-checkbox" type="checkbox" value="${subject.id}" id="check-${subject.id}" onchange="handleSubjectSelection(this)">
+                                <label class="form-check-label fw-bold stretched-link" for="check-${subject.id}">
+                                    ${subject.name}
+                                </label>
+                            </div>
+                            <p class="text-muted small mt-2 mb-0">${subject.questions.length} Questions</p>
+                        </div>
+                    `;
+                    container.appendChild(col);
+                });
+            } catch (error) {
+                console.error('Error loading subjects:', error);
+                document.getElementById('subjectContainer').innerHTML = '<p class="text-danger text-center">Failed to load subjects. Please refresh.</p>';
+            }
+        }
+
+        function handleSubjectSelection(checkbox) {
+            const checkedBoxes = document.querySelectorAll('.subject-checkbox:checked');
+            if (checkedBoxes.length > 10) {
+                checkbox.checked = false;
+                alert("You can select a maximum of 10 subjects.");
+            }
+        }
+
+        function startExam() {
+            const selectedSubjects = Array.from(document.querySelectorAll('.subject-checkbox:checked')).map(cb => cb.value);
+            if (selectedSubjects.length === 0) {
+                alert('Please select at least one subject.');
+                return;
+            }
+
+            const duration = document.getElementById('durationSelect').value;
+
+            // Store config
+            sessionStorage.setItem('examConfig', JSON.stringify({
+                subjects: selectedSubjects,
+                duration: parseInt(duration)
+            }));
+
+            window.location.href = 'exam.html';
+        }
+
+        loadSubjects();
+    </script>
+</body>
+
+</html>
