@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrainCode CBT - Exam In Progress</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Exam specific layout overrides */
+        body {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .main-content {
+            height: calc(100vh - 70px);
+            /* Adjust based on header height */
+            overflow: hidden;
+        }
+
+        .question-area {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .sidebar {
+            height: 100%;
+            background: #fff;
+            border-left: 1px solid #dee2e6;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<div class="d-flex align-items-center">
+    <div class="timer-box me-3" id="timer">00:00:00</div>
+    <button class="btn btn-danger btn-sm fw-bold" onclick="submitExam()">Submit Exam</button>
+</div>
+</div>
+</nav>
+
+<div class="container-fluid main-content">
+    <div class="row h-100">
+        <!-- Main Question Area -->
+        <div class="col-md-8 col-lg-9 question-area p-4 bg-light">
+
+            <!-- Subject Tabs -->
+            <ul class="nav nav-pills mb-4" id="subjectTabs">
+                <!-- Tabs injected by JS -->
+            </ul>
+
+            <div class="glass-card question-panel animate-fade-in">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="text-primary fw-bold" id="subjectTitle">Subject Name</h5>
+                    <span class="badge bg-secondary" id="questionCounter">Question 1 of 50</span>
+                </div>
+
+                <div class="mb-4">
+                    <p class="lead" id="questionText">Loading question...</p>
+                </div>
+
+                <div class="options-container" id="optionsContainer">
+                    <!-- Options injected by JS -->
+                </div>
+
+                <div class="d-flex justify-content-between mt-5">
+                    <button class="btn btn-outline-primary" id="prevBtn" onclick="navigate(-1)">
+                        <i class="fas fa-chevron-left me-2"></i> Previous
+                    </button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="navigate(1)">
+                        Next <i class="fas fa-chevron-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar (Question Navigator) -->
+        <div class="col-md-4 col-lg-3 sidebar p-3">
+            <h6 class="fw-bold text-muted mb-3">Question Navigator</h6>
+
+            <div class="card mb-3 border-0 bg-light">
+                <div class="card-body p-2">
+                    <div class="d-flex justify-content-around small text-center">
+                        <div><span class="badge bg-success rounded-circle p-1"
+                                style="width:10px; height:10px; display:inline-block;"></span> Answered</div>
+                        <div><span class="badge bg-white border rounded-circle p-1"
+                                style="width:10px; height:10px; display:inline-block;"></span> Unanswered</div>
+                        <div><span class="badge border border-primary rounded-circle p-1"
+                                style="width:10px; height:10px; display:inline-block;"></span> Current</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-grid" id="navGrid">
+                <!-- Nav buttons injected by JS -->
+            </div>
+
+            <div class="mt-4 p-3 glass-card bg-white">
+                <h6 class="small fw-bold text-muted">Calculator</h6>
+                <!-- Simple Calculator -->
+                <div class="input-group mb-2">
+                    <input type="text" class="form-control form-control-sm text-end" id="calcDisplay" readonly>
+                </div>
+                <div class="row g-1">
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('7')">7</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('8')">8</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('9')">9</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('/')">/</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('4')">4</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('5')">5</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('6')">6</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('*')">*</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('1')">1</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('2')">2</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('3')">3</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('-')">-</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('0')">0</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('.')">.</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-primary btn-sm w-100" onclick="calc('=')">=</button>
+                    </div>
+                    <div class="col-3"><button class="btn btn-light btn-sm w-100" onclick="calc('+')">+</button>
+                    </div>
+                    <div class="col-12"><button class="btn btn-danger btn-sm w-100 mt-1"
+                            onclick="calc('C')">Clear</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Submit Modal -->
+<div class="modal fade" id="submitModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Submit Examination</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to submit? You cannot return to the exam once submitted.</p>
+                <div class="alert alert-info">
+                    <strong>Summary:</strong><br>
+                    Answered: <span id="modalAnswered">0</span><br>
+                    Unanswered: <span id="modalUnanswered">0</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                calcExpression = '';
+                } else if (val === '=') {
+                try {
+                calcExpression = eval(calcExpression).toString();
+                } catch {
+                calcExpression = 'Error';
+                }
+                } else {
+                calcExpression += val;
+                }
+                display.value = calcExpression;
+                }
+                </script>
+                </body>
+
+</html>
